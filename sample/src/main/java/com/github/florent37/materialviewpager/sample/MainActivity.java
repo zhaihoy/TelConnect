@@ -1,8 +1,15 @@
 package com.github.florent37.materialviewpager.sample;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,13 +22,16 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.HeaderDesign;
+import com.github.florent37.materialviewpager.sample.Interface.RequestPermissionType;
 import com.github.florent37.materialviewpager.sample.fragment.RecyclerViewFragment;
+import com.github.florent37.materialviewpager.sample.fragment.RecyclerViewPhoneConnnectFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends DrawerActivity {
+
 
     @BindView(R.id.materialViewPager)
     MaterialViewPager mViewPager;
@@ -34,6 +44,9 @@ public class MainActivity extends DrawerActivity {
         ButterKnife.bind(this);
 
         final Toolbar toolbar = mViewPager.getToolbar();
+        checkPermissons(Manifest.permission.CALL_PHONE,RequestPermissionType.REQUEST_CODE_ASK_CALL_PHONE);
+
+
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -43,12 +56,15 @@ public class MainActivity extends DrawerActivity {
             @Override
             public Fragment getItem(int position) {
                 switch (position % 4) {
-                    //case 0:
-                    //    return RecyclerViewFragment.newInstance();
-                    //case 1:
-                    //    return RecyclerViewFragment.newInstance();
-                    //case 2:
-                    //    return WebViewFragment.newInstance();
+                    case 0:
+                        //通讯录
+                        return RecyclerViewFragment.newInstance();
+
+                    case 1:
+                        //导入联系人
+                        return RecyclerViewPhoneConnnectFragment.newInstance();
+//                    case 2:
+//                        return WebViewFragment.newInstance();
                     default:
                         return RecyclerViewFragment.newInstance();
                 }
@@ -117,4 +133,35 @@ public class MainActivity extends DrawerActivity {
             });
         }
     }
+
+
+    private Boolean checkPermissons( String callPhone, int requestCodeAskCallPhone) {
+        boolean flag = false;
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), callPhone) == PackageManager.PERMISSION_GRANTED) {//已有权限
+            flag = true;
+        } else {//申请权限
+            ActivityCompat.requestPermissions(this
+                    , new String[]{callPhone}, requestCodeAskCallPhone);
+        }
+        return flag;
+
+    }
+    /**
+     * 检查权限后的回调
+     * @param requestCode 请求码
+     * @param permissions  权限
+     * @param grantResults 结果
+     */
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case RequestPermissionType.REQUEST_CODE_ASK_CALL_PHONE: //拨打电话
+                if (permissions.length != 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {//失败
+                    Toast.makeText(this,"请允许拨号权限后再试",Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
 }

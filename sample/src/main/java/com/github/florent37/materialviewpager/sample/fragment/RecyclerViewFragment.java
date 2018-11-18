@@ -19,11 +19,10 @@ import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDeco
 import com.github.florent37.materialviewpager.sample.Api.NetWorkAPI;
 import com.github.florent37.materialviewpager.sample.Config.Config;
 import com.github.florent37.materialviewpager.sample.R;
-import com.github.florent37.materialviewpager.sample.TestRecyclerViewAdapter;
+import com.github.florent37.materialviewpager.sample.adapter.TestRecyclerViewAdapter;
 import com.github.florent37.materialviewpager.sample.bean.ImaBean;
 import com.github.florent37.materialviewpager.sample.util.PhoneUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -117,7 +116,7 @@ public class RecyclerViewFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         //Use this now
         mRecyclerView.addItemDecoration(new MaterialViewPagerHeaderDecorator());
-        mRecyclerView.setAdapter(new TestRecyclerViewAdapter(url));
+        mRecyclerView.setAdapter(new TestRecyclerViewAdapter(url,getContext()));
         mRecyclerView.setAdapter(new TestRecyclerViewAdapter(phoneDtos));
 
     }
