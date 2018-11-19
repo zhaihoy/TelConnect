@@ -185,6 +185,6 @@ public class MyRecycleViewAdapter extends RecyclerView.Adapter<MyRecycleViewAdap
             }
 
         }
-
+/*--------------------------------------------------------------------------------------------------*/
     }
 }
